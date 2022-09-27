@@ -165,6 +165,7 @@ class ValidacionAchivo():
         if erroresLargoCadena > 0:
             self.__validacionArista = False
             print("Error, largo de texto invalido")
+
         if acum == 0 and erroresLargoCadena==0:
             self.__validacionArista = True
 
@@ -194,10 +195,23 @@ class ValidacionAchivo():
                 self.__caminoBuscado.append(color_ruta)
         return self.__caminoBuscado
 
-
     '''Validación del camino buscado'''
 
+
+    def ObtenerColorVertice( self, vertice , listado_vertices):
+        '''El listado de vertices ingresados corresponde a un lista que contiene el par  [Vertice,Color_vertice]'''
+        '''Por ejemplo : [['A','R'],['B','R'],['C','C'],['D','V'],['E','C']].    
+        '''
+        color_ingresado = ''
+        for v in listado_vertices:
+            if v[0] == vertice:
+                color_ingresado = v[1]
+        return color_ingresado
+
+    '''Archivo'''
+
     def validarCaminoBuscado(self):
+
         erroresEncontrados = 0
         listado_vertices = []
         color_vertice_inicial = 1
@@ -211,7 +225,6 @@ class ValidacionAchivo():
         vertice_final = self.__caminoBuscado[1]
         color_ruta = self.__caminoBuscado[2]
 
-
         if vertice_inicial not in listado_vertices:
             erroresEncontrados = erroresEncontrados +1
 
@@ -224,61 +237,43 @@ class ValidacionAchivo():
         if len(self.__caminoBuscado) ==0:
             erroresEncontrados = erroresEncontrados + 1
 
-        if erroresEncontrados == 0:
-            self.__validacionCamino = True
-
         '''Solo puede existir un camino buscado por archivo'''
         if len(self.__lecturaCaminoBuscado)>1:
-            self.__validacionCamino = False
+            erroresEncontrados = erroresEncontrados + 1
             '''Hay mas de un camino buscado'''
         if len(self.__lecturaCaminoBuscado)==0:
-            self.__validacionCamino = False
+            erroresEncontrados = erroresEncontrados + 1
             '''No hay camino buscado'''
 
+        '''Algoritmo solo se puede ejecutar si:
+                    ColorVerticeInicial == 'R' and ColorVerticeFinal == 'R' or
+                    ColorVerticeInicial == 'V' and ColorVerticeFinal == 'V' or
+                    (ColorVerticeInicial == 'C' or ColorVerticeFinal == 'C' )
+        '''
+
+        ColorVerticeInicial = self.ObtenerColorVertice(self.__caminoBuscado[0], self.__vertice)
+        ColorVerticeFinal = self.ObtenerColorVertice(self.__caminoBuscado[1], self.__vertice)
+        ColorRuta = self.__caminoBuscado[2]
+
+        if not ((ColorVerticeInicial == ColorVerticeFinal) or (ColorVerticeInicial == 'C' or ColorVerticeFinal == 'C')):
+            erroresEncontrados = erroresEncontrados +1
+
+        if erroresEncontrados == 0:
+            self.__validacionCamino = True
+        else:
+            self.__validacionCamino = False
 
         return self.__validacionCamino
 
 
-    def ObtenerColorVertice( self, vertice , listado_vertices):
-        '''El listado de vertices ingresados corresponde a un lista que contiene el par  [Vertice,Color_vertice]'''
-        '''Por ejemplo : [['A','R'],['B','R'],['C','C'],['D','V'],['E','C']].    
-        '''
-        color_ingresado = ''
-        for v in listado_vertices:
-            if v[0] == vertice:
-                color_ingresado = v[1]
-        return color_ingresado
-
-    '''Archivo
-    '''
     def validacionArchivoCompleto(self):
         if not self.__validacionVertices:
             print('Error: Vertices ingresados en archivo son invalidos')
-        if not self.__validacionVertices:
+        if not self.__validacionArista:
             print('Error: Aristas ingresadas en archivo son invalidos')
         if not self.__validacionCamino:
             print('Error: Camino buscado en archivo son invalidos')
         if self.__validacionVertices and self.__validacionArista and self.__validacionCamino:
             self.__validacionArchivoCompleto = True
-
-        '''La siguiente validacion es para determinar si existe un recorrido entre el vertice_inicial
-           y vertice_final por la ruta ingresada 
-        '''
-        ColorVerticeInicial = self.ObtenerColorVertice( self.__caminoBuscado[0] , self.__vertice)
-        ColorVerticeFinal = self.ObtenerColorVertice(self.__caminoBuscado[1], self.__vertice)
-        ColorRuta = self.__caminoBuscado[2]
-
-        '''Algoritmo solo se puede ejecutar si:
-            ColorVerticeInicial == 'R' and ColorVerticeFinal == 'R' or
-            ColorVerticeInicial == 'V' and ColorVerticeFinal == 'V' or
-            (ColorVerticeInicial == 'C' or ColorVerticeFinal == 'C' )
-        
-        es decir, solo se puede ejecutar si el color ColorVerticeInicial y el ColorVerticeFinal son iguales
-        o al menos uno de estas dos colores es 'C'
-        '''
-
-        if not (ColorVerticeInicial == ColorVerticeFinal or (ColorVerticeInicial == 'C' or ColorVerticeFinal == 'C')):
-            print("Error: El color de la ruta ingresada es incompatible con el color de los vertices ingresados")
-            self.__validacionArchivoCompleto = False
         return self.get__validacionArchivoCompleto()
 

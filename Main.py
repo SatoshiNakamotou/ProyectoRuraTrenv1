@@ -16,7 +16,7 @@ def main(ruta_archivo):
     else:
         print('Error : ruta de archivo no existe')
 
-ruta='C:\\Users\\super\\Desktop\\Proyectos en Python\\EjemplosParaPrueba\\Prueba5.txt'
+ruta='C:\\Users\\super\\Desktop\\Proyectos en Python\\EjemplosParaPrueba\\Prueba1.txt'
 main(ruta)
 
 
